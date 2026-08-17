@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Practice App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2rem;
+        }
+
+        .card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .counter-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .counter-section h3 {
+            color: #444;
+            margin-bottom: 15px;
+        }
+
+        .counter-display {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: bold;
+            color: #667eea;
+            margin: 10px 0;
+            padding: 10px;
+            background: #f0f2ff;
+            border-radius: 10px;
+            transition: transform 0.2s ease;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 5px 20px rgba(108, 117, 125, 0.4);
+        }
+
+        .info-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #555;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            transition: border-left-color 0.3s ease;
+        }
+
+        .info-box p {
+            margin: 5px 0;
+            width: 100%;
+        }
+
+        .info-box strong {
+            color: #333;
+        }
+
+        footer {
+            text-align: center;
+            color: #999;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐳 Docker Practice App</h1>
+        <div class="card">
+            <h2>Welcome, DevOps Student!</h2>
+            <p>This is a single-file web application for practicing Dockerfiles.</p>
+            
+            <div class="counter-section">
+                <h3>Click Counter</h3>
+                <div class="counter-display" id="clickCount">
+                    0
+                </div>
+                <button id="clickBtn" class="btn">Click Me!</button>
+            </div>
+            
+            <div class="info-section">
+                <h3>Container Info <span class="status-badge" id="statusBadge">Ready</span></h3>
+                <div id="containerInfo" class="info-box">
+                    <p style="text-align: center;">🚀 Click "Get Container Info" to see container details!</p>
+                </div>
+                <button id="infoBtn" class="btn btn-secondary">Get Container Info</button>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Built with ❤️ for Docker Practice | Single-File Version</p>
+        </footer>
+    </div>
+
+    <script>
+        // ============================================
+        // CLICK COUNTER FUNCTIONALITY
+        // ============================================
+        let count = 0;
+        const clickBtn = document.getElementById('clickBtn');
+        const clickDisplay = document.getElementById('clickCount');
+
+        clickBtn.addEventListener('click', () => {
+            count++;
+            clickDisplay.textContent = count;
+            // Add animation effect
+            clickDisplay.style.transform = 'scale(1.3)';
+            setTimeout(() => {
+                clickDisplay.style.transform = 'scale(1)';
+            }, 200);
+        });
+
+        // ============================================
+        // CONTAINER INFO FUNCTIONALITY
+        // ============================================
+        const infoBtn = document.getElementById('infoBtn');
+        const containerInfo = document.getElementById('containerInfo');
+        const statusBadge = document.getElementById('statusBadge');
+
+        infoBtn.addEventListener('click', async () => {
+            // Update status
+            statusBadge.textContent = 'Loading...';
+            statusBadge.style.background = '#ffc107';
+            containerInfo.innerHTML = '<p>🔄 Fetching container information...</p>';
+            
+            // Gather system information
+            const info = {
+                timestamp: new Date().toISOString(),
+                hostname: window.location.hostname || 'localhost',
+                userAgent: navigator.userAgent,
+                platform: navigator.platform || 'Unknown',
+                language: navigator.language || 'en-US',
+                memory: 'Unknown',
+                cores: navigator.hardwareConcurrency || 'Unknown',
+                containerId: 'Not Available',
+                containerName: 'Not Available'
+            };
+
+            // Try to get container info from environment (if passed via Docker)
+            // In Docker, you can pass these as environment variables
+            const containerId = '{{ .ContainerID }}' || 'Not Available';
+            const containerName = '{{ .Name }}' || 'Not Available';
+            
+            if (containerId !== '{{ .ContainerID }}') {
+                info.containerId = containerId;
+                info.containerName = containerName;
+            }
+
+            // Get memory info if available
+            if (window.performance && window.performance.memory) {
+                const memMB = Math.round(window.performance.memory.usedJSHeapSize / (1024 * 1024));
+                info.memory = `${memMB} MB`;
+            }
+
+            // Display the information with nice formatting
+            containerInfo.innerHTML = `
+                <div style="width: 100%;">
+                    <p>⏰ <strong>Time:</strong> ${info.timestamp}</p>
+                    <p>🖥️ <strong>Host:</strong> ${info.hostname}</p>
+                    <p>📱 <strong>Platform:</strong> ${info.platform}</p>
+                    <p>🌐 <strong>Language:</strong> ${info.language}</p>
+                    <p>💻 <strong>CPU Cores:</strong> ${info.cores}</p>
+                    <p>🧠 <strong>Memory:</strong> ${info.memory}</p>
+                    <p>🐳 <strong>Container ID:</strong> ${info.containerId}</p>
+                    <p>📦 <strong>Container Name:</strong> ${info.containerName}</p>
+                    <p style="margin-top: 10px; font-size: 0.8rem; color: #999;">
+                        ✅ Container is running successfully!
+                    </p>
+                </div>
+            `;
+            
+            // Update status
+            statusBadge.textContent = 'Updated';
+            statusBadge.style.background = '#28a745';
+            
+            // Visual feedback
+            containerInfo.style.borderLeftColor = '#28a745';
+            setTimeout(() => {
+                containerInfo.style.borderLeftColor = '#667eea';
+            }, 2000);
+        });
+
+        // ============================================
+        // ADDITIONAL INTERACTIVE FEATURES
+        // ============================================
+        
+        // Button hover effects
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                btn.style.transform = 'scale(1.05)';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'scale(1)';
+            });
+        });
+
+        // Keyboard shortcut: Press 'I' to get info, 'C' to click
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'i' || e.key === 'I') {
+                infoBtn.click();
+            }
+            if (e.key === 'c' || e.key === 'C') {
+                clickBtn.click();
+            }
+        });
+
+        // Auto-get info after 3 seconds (to show it works)
+        setTimeout(() => {
+            console.log('🐳 Docker Practice App is ready!');
+            console.log('💡 Press "I" for info, "C" to click');
+        }, 3000);
+
+        // ============================================
+        // CONSOLE WELCOME MESSAGE
+        // ============================================
+        console.log('%c🐳 Docker Practice App', 'font-size: 20px; font-weight: bold; color: #667eea;');
+        console.log('%cSingle-File Version - Ready for Containerization!', 'font-size: 14px; color: #764ba2;');
+        console.log('📋 Container Info: Click the button or press "I"');
+        console.log('🖱️ Click Counter: Click the button or press "C"');
+    </script>
+</body>
+</html>
